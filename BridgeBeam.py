@@ -15,8 +15,11 @@ class CreateBridge:
         self.El_list = []
         self.handle_list = []
         self.document = doc
-
-    def create(self, build_El):   
+        self._topSH_width,_topSH_height = None
+        self._botSH_width,_botSH_up_height,_botSH_low_height,_botSH_height = None
+        self._hole_depth,_hole_height = None
+        self._angleX,_angleY,_angleZ = None
+    def create(self, build_El): 
         self.create_top(self, build_EL)
         self.create_bot(self, build_EL)
         self.create_holeAngle(self, build_EL)
