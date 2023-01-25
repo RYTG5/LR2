@@ -16,10 +16,26 @@ class CreateBridge:
         self.handle_list = []
         self.document = doc
 
-    def create(self, build_El):
+    def create(self, build_El):   
+        self.create_top(self, build_EL)
+        self.create_bot(self, build_EL)
+        self.create_holeAngle(self, build_EL)
+        self.create_B(build_El)
+        self.create_handle12(self)
+        self.create_handle34(self)
+        self.create_handle5(self)
+
+        AllplanBaseElements.ElementTransform(AllplanGeo.Vector3D(), self._angleX, self._angleY, self._angleZ,
+                                             self.El_list)
+
+        rot_angles = RotationAngles(self._angleX, self._angleY, self._angleZ)
+        HandleService.transform_handles(self.handle_list, rot_angles.get_rotation_matrix())
+
+        return self.El_list, self.handle_list
+    def create_top(self, build_EL):
         self._topSH_width = build_El.TopShWidth.value
         self._topSH_height = build_El.TopShHeight.value
-
+    def create_bot(self, build_EL):
         self._botSH_width = build_El.BotShWidth.value
         self._botSH_up_height = build_El.BotShUpHeight.value
         self._botSH_low_height = build_El.BotShLowHeight.value
@@ -30,24 +46,13 @@ class CreateBridge:
         self._beam_length = build_El.BeamLength.value
         self._beam_width = max(self._topSH_width, self._botSH_width)
         self._beam_height = build_El.BeamHeight.value
-            
+    def create_holeAngle(self, build_EL): 
         self._hole_depth = build_El.HoleDepth.value
         self._hole_height = build_El.HoleHeight.value
-
         self._angleX = build_El.RotationAngleX.value
         self._angleY = build_El.RotationAngleY.value
         self._angleZ = build_El.RotationAngleZ.value
-
-        self.create_beam(build_El)
-        self.create_handles(build_El)
-
-        AllplanBaseElements.ElementTransform(AllplanGeo.Vector3D(), self._angleX, self._angleY, self._angleZ,
-                                             self.El_list)
-
-        rot_angles = RotationAngles(self._angleX, self._angleY, self._angleZ)
-        HandleService.transform_handles(self.handle_list, rot_angles.get_rotation_matrix())
-
-        return self.El_list, self.handle_list
+        
     def RibThick_equality(self, build_El):
         if build_El.RibThick.value > min(self._topSH_width, self._botSH_width):
             build_El.RibThick.value = min(self._topSH_width, self._botSH_width)
